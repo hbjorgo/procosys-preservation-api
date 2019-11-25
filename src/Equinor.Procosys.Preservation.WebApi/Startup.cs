@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Equinor.Procosys.Preservation.Command;
+using Equinor.Procosys.Preservation.Domain.IntegrationEvents;
 using Equinor.Procosys.Preservation.Messaging;
 using Equinor.Procosys.Preservation.Query;
 using Equinor.Procosys.Preservation.WebApi.DIModules;
@@ -93,7 +94,7 @@ namespace Equinor.Procosys.Preservation.WebApi
             });
 
             services.AddMediatrModules();
-            services.AddApplicationModules(Configuration.GetConnectionString("PreservationContext"));
+            services.AddApplicationModules(Configuration);
             services.AddApplicationInsightsTelemetry();
         }
 

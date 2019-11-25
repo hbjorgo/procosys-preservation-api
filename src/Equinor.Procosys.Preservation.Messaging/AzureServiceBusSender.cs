@@ -7,11 +7,11 @@ namespace Equinor.Procosys.Preservation.Messaging
 {
     public class AzureServiceBusSender : IMessageSender
     {
-        private readonly QueueClient _queueClient;
+        private readonly IQueueClient _queueClient;
 
-        public AzureServiceBusSender(string serviceBusConnectionString, string queueName)
+        public AzureServiceBusSender(IQueueClient queueClient)
         {
-            _queueClient = new QueueClient(serviceBusConnectionString, queueName);
+            _queueClient = queueClient;
         }
 
         public async Task SendMessage(Domain.IntegrationEvents.Message message)

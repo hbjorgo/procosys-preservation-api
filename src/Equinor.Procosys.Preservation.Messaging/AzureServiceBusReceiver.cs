@@ -10,17 +10,16 @@ namespace Equinor.Procosys.Preservation.Messaging
 {
     public class AzureServiceBusReceiver : IMessageReceiver
     {
-        private readonly QueueClient _queueClient;
+        private readonly IQueueClient _queueClient;
         private readonly IMessageHandler _messageHandler;
         private readonly ILogger<AzureServiceBusReceiver> _logger;
 
         public AzureServiceBusReceiver(
-            string serviceBusConnectionString,
-            string queueName,
+            IQueueClient queueClient,
             IMessageHandler messageHandler,
             ILogger<AzureServiceBusReceiver> logger)
         {
-            _queueClient = new QueueClient(serviceBusConnectionString, queueName);
+            _queueClient = queueClient;
             _messageHandler = messageHandler;
             _logger = logger;
         }

@@ -9,23 +9,32 @@ using Equinor.Procosys.Preservation.Messaging;
 using Equinor.Procosys.Preservation.WebApi.Middleware;
 using Equinor.Procosys.Preservation.WebApi.Misc;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Azure.ServiceBus;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Equinor.Procosys.Preservation.WebApi.DIModules
 {
     public static class ApplicationModule
     {
-        public static void AddApplicationModules(this IServiceCollection services, string dbConnectionString)
+        public static void AddApplicationModules(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<PreservationContext>(options =>
             {
-                options.UseSqlServer(dbConnectionString);
+                options.UseSqlServer(configuration.GetConnectionString("PreservationContext"));
             });
 
             // Transient - Created each time it is requested from the service container
             services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
             services.AddTransient<IPlantProvider, PlantProvider>();
+            services.AddSingleton<IMessageHandler, MessageHandler>();
+            services.AddTransient<IQueueClient, QueueClient>(_ =>
+            {
+                return new QueueClient(
+                    configuration["ServiceBus:ConnectionString"],
+                    configuration["ServiceBus:QueueName"]);
+            });
 
             // Scoped - Created once per client request (connection)
             services.AddScoped<IReadOnlyContext, PreservationContext>();
@@ -36,7 +45,6 @@ namespace Equinor.Procosys.Preservation.WebApi.DIModules
             services.AddSingleton<ITimeService, TimeService>();
             services.AddSingleton<IMessageSender, AzureServiceBusSender>();
             services.AddSingleton<IMessageReceiver, AzureServiceBusReceiver>();
-            services.AddSingleton<IMessageHandler, MessageHandler>();
         }
     }
 }
