@@ -17,7 +17,7 @@ namespace Equinor.Procosys.Preservation.Messaging
             _logger = logger;
         }
 
-        public async Task SendMessage(Domain.IntegrationEvents.Message message)
+        public async Task SendMessageAsync(Domain.IntegrationEvents.Message message)
         {
             _logger.LogDebug($"Sending message: {message}");
             var serviceBusMessage = new Microsoft.Azure.ServiceBus.Message(JsonSerializer.SerializeToUtf8Bytes(message));

@@ -4,6 +4,6 @@ namespace Equinor.Procosys.Preservation.Domain.IntegrationEvents
 {
     public interface IMessageSender
     {
-        Task SendMessage(Message message);
+        Task SendMessageAsync(Message message);
     }
 }
