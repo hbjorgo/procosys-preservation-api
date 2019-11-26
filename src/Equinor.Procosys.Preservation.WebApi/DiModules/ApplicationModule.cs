@@ -1,9 +1,7 @@
 ﻿using Equinor.Procosys.Preservation.Command;
 using Equinor.Procosys.Preservation.Command.EventHandlers;
-using Equinor.Procosys.Preservation.Command.IntegrationEventHandlers;
 using Equinor.Procosys.Preservation.Domain;
 using Equinor.Procosys.Preservation.Domain.Events;
-using Equinor.Procosys.Preservation.Domain.IntegrationEvents;
 using Equinor.Procosys.Preservation.Infrastructure;
 using Equinor.Procosys.Preservation.Messaging;
 using Equinor.Procosys.Preservation.WebApi.Middleware;
@@ -28,7 +26,6 @@ namespace Equinor.Procosys.Preservation.WebApi.DIModules
             // Transient - Created each time it is requested from the service container
             services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
             services.AddTransient<IPlantProvider, PlantProvider>();
-            services.AddTransient<IMessageHandler, MessageHandler>();
             services.AddTransient<IQueueClient, QueueClient>(_ =>
             {
                 return new QueueClient(
@@ -43,8 +40,8 @@ namespace Equinor.Procosys.Preservation.WebApi.DIModules
 
             // Singleton - Created the first time they are requested
             services.AddSingleton<ITimeService, TimeService>();
-            services.AddSingleton<IMessageSender, AzureServiceBusSender>();
-            services.AddSingleton<IMessageReceiver, AzureServiceBusReceiver>();
+            services.AddSingleton<IEventBus, PublishToLogEventBus>();
+            services.AddSingleton<IntegrationEventProcesser>();
         }
     }
 }
