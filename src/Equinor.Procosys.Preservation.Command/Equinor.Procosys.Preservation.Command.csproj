@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Equinor.Procosys.Preservation.Domain\Equinor.Procosys.Preservation.Domain.csproj" />
+    <ProjectReference Include="..\Equinor.Procosys.Preservation.Messaging\Equinor.Procosys.Preservation.Messaging.csproj" />
   </ItemGroup>
 
 </Project>

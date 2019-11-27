@@ -18,6 +18,13 @@ namespace Equinor.Procosys.Preservation.WebApi.DIModules
     {
         public static void AddApplicationModules(this IServiceCollection services, IConfiguration configuration)
         {
+            // Configuration
+            services.Configure<IntegrationEventProcesserSettings>(options =>
+                configuration.GetSection("IntegrationEventProcesserSettings")
+                .Bind(options)
+            );
+
+            // Database context
             services.AddDbContext<PreservationContext>(options =>
             {
                 options.UseSqlServer(configuration.GetConnectionString("PreservationContext"));
@@ -40,8 +47,13 @@ namespace Equinor.Procosys.Preservation.WebApi.DIModules
 
             // Singleton - Created the first time they are requested
             services.AddSingleton<ITimeService, TimeService>();
-            services.AddSingleton<IEventBus, PublishToLogEventBus>();
-            services.AddSingleton<IntegrationEventProcesser>();
+            services.AddSingleton<IEventBus, LogEventBus>();
+            
+            // Background services
+            services.AddHostedService<IntegrationEventProcesser>();
+
+            // Misc.
+            services.AddApplicationInsightsTelemetry();
         }
     }
 }

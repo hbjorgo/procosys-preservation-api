@@ -1,4 +1,6 @@
-﻿namespace Equinor.Procosys.Preservation.Messaging
+﻿using System;
+
+namespace Equinor.Procosys.Preservation.Messaging
 {
     public interface IEventBus
     {
