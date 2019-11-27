@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Equinor.Procosys.Preservation.Messaging
 {
-    public class IntegrationEvent
+    public abstract class IntegrationEvent
     {
         public IntegrationEvent()
         {

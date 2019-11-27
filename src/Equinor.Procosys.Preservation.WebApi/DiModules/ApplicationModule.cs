@@ -33,12 +33,6 @@ namespace Equinor.Procosys.Preservation.WebApi.DIModules
             // Transient - Created each time it is requested from the service container
             services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
             services.AddTransient<IPlantProvider, PlantProvider>();
-            services.AddTransient<IQueueClient, QueueClient>(_ =>
-            {
-                return new QueueClient(
-                    configuration["ServiceBus:ConnectionString"],
-                    configuration["ServiceBus:QueueName"]);
-            });
 
             // Scoped - Created once per client request (connection)
             services.AddScoped<IReadOnlyContext, PreservationContext>();
