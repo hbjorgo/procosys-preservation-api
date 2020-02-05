@@ -7,11 +7,6 @@ namespace Equinor.Procosys.Preservation.Command.JourneyCommands.CreateJourney
     {
         public CreateJourneyCommandValidator(IJourneyValidator journeyValidator)
         {
-            RuleFor(x => x.Title)
-                .Must(HaveUniqueTitle)
-                .WithMessage(x => $"Journey with title already exists! Journey={x.Title}");
-
-            bool HaveUniqueTitle(string title) => !journeyValidator.Exists(title);
         }
     }
 }
