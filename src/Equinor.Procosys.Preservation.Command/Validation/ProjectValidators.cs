@@ -13,7 +13,7 @@ namespace Equinor.Procosys.Preservation.Command.Validation
             return result;
         }
 
-        public static ValidationResult<Project> MustNotBeVoided(this ValidationResult<Project> result, Project project)
+        public static ValidationResult<Project> MustNotBeClosed(this ValidationResult<Project> result, Project project)
         {
             if (project.IsClosed)
             {
