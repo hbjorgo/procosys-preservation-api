@@ -3,12 +3,6 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Equinor.Procosys.Preservation.Domain;
-using Equinor.Procosys.Preservation.Domain.AggregateModels.JourneyAggregate;
-using Equinor.Procosys.Preservation.Domain.AggregateModels.ModeAggregate;
-using Equinor.Procosys.Preservation.Domain.AggregateModels.PersonAggregate;
-using Equinor.Procosys.Preservation.Domain.AggregateModels.ProjectAggregate;
-using Equinor.Procosys.Preservation.Domain.AggregateModels.RequirementTypeAggregate;
-using Equinor.Procosys.Preservation.Domain.AggregateModels.ResponsibleAggregate;
 using Equinor.Procosys.Preservation.Domain.Events;
 using Microsoft.EntityFrameworkCore;
 
@@ -51,21 +45,6 @@ namespace Equinor.Procosys.Preservation.Infrastructure
 
         public static DateTimeKindConverter DateTimeKindConverter { get; } = new DateTimeKindConverter();
         public static NullableDateTimeKindConverter NullableDateTimeKindConverter { get; } = new NullableDateTimeKindConverter();
-
-        public virtual DbSet<Journey> Journeys { get; set; }
-        public virtual DbSet<Step> Step { get; set; }
-        public virtual DbSet<Mode> Modes { get; set; }
-        public virtual DbSet<Responsible> Responsibles { get; set; }
-        public virtual DbSet<Tag> Tags { get; set; }
-        public virtual DbSet<RequirementType> RequirementTypes { get; set; }
-        public virtual DbSet<RequirementDefinition> RequirementDefinitions { get; set; }
-        public virtual DbSet<Field> Fields { get; set; }
-        public virtual DbSet<Requirement> Requirements { get; set; }
-        public virtual DbSet<Person> Persons { get; set; }
-        public virtual DbSet<PreservationRecord> PreservationRecords { get; set; }
-        public virtual DbSet<PreservationPeriod> PreservationPeriods { get; set; }
-        public virtual DbSet<Project> Projects { get; set; }
-        public virtual DbSet<FieldValue> FieldValues { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
