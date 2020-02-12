@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json.schemastore.org/template", // https://github.com/dotnet/templating/wiki/Reference-for-template.json
+  "author": "Equinor ProCoSys",
+  "classifications": [ "Web/MVC" ], // Use command 'dotnet new' to see list of other classifications
+  "name": "Domain Driven Design API", // Name that is displayed when running 'dotnet new' command
+  "identity": "DDDAPI", // Unique name for this template
+  "shortName": "dddapi", // Alternative shortname, i.e. 'dotnet new mygamestartup'
+  "tags": {
+    "language": "C#", // Specify that this template is in C#.
+    "type": "project"
+  },
+  "sourceName": "Preservation", // Will replace the string 'MyStartup' with the value provided via -n.
+  "preferNameDirectory": true, // If -n is not specified, will use name of the current directory
+  "symbols": {
+  }
+}
