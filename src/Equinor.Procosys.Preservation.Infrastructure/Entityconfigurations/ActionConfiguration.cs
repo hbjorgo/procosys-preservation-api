@@ -13,6 +13,7 @@ namespace Equinor.Procosys.Preservation.Infrastructure.EntityConfigurations
             builder.ConfigureSchema();
             builder.ConfigureCreationAudit();
             builder.ConfigureModificationAudit();
+            builder.ConfigureConcurrencyToken();
 
             builder.Property(x => x.Title)
                 .HasMaxLength(Action.TitleLengthMax)

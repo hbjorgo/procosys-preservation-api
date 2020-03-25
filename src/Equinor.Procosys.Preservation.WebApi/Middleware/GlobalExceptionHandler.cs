@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Equinor.Procosys.Preservation.Domain.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
@@ -35,6 +36,14 @@ namespace Equinor.Procosys.Preservation.WebApi.Middleware
                 var json = JsonSerializer.Serialize(response);
                 _logger.LogInformation(json);
                 await context.Response.WriteAsync(json);
+            }
+            catch (ConcurrencyException)
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.Conflict;
+                context.Response.ContentType = "application/text";
+                var message = "Datastore operation failed. Data may have been modified or deleted since entities were loaded.";
+                _logger.LogDebug(message);
+                await context.Response.WriteAsync(message);
             }
             catch (Exception ex)
             {

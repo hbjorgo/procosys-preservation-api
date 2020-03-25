@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using MediatR;
 
 namespace Equinor.Procosys.Preservation.Domain
@@ -12,6 +14,10 @@ namespace Equinor.Procosys.Preservation.Domain
 
         public IReadOnlyCollection<INotification> DomainEvents => _domainEvents?.AsReadOnly() ?? (_domainEvents = new List<INotification>()).AsReadOnly();
         public virtual int Id { get; protected set; }
+        public byte[] RowVersion { get; protected set; }
+
+        public ulong GetRowVersion() => BitConverter.ToUInt64(RowVersion);
+        public void SetRowVersion(ulong version) => RowVersion = BitConverter.GetBytes(version);
 
         public void AddDomainEvent(INotification eventItem)
         {

@@ -11,6 +11,7 @@ namespace Equinor.Procosys.Preservation.Infrastructure.EntityConfigurations
         {
             builder.ConfigureSchema();
             builder.ConfigureCreationAudit();
+            builder.ConfigureConcurrencyToken();
 
             builder
                 .HasDiscriminator<string>("FieldType")
