@@ -8,7 +8,6 @@ using Equinor.Procosys.Preservation.Command.Validators.TagValidators;
 using Equinor.Procosys.Preservation.Domain.AggregateModels.ProjectAggregate;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Requirement = Equinor.Procosys.Preservation.Command.TagCommands.Requirement;
 
 namespace Equinor.Procosys.Preservation.Command.Tests.TagCommands.CreateAreaTag
 {
@@ -48,10 +47,10 @@ namespace Equinor.Procosys.Preservation.Command.Tests.TagCommands.CreateAreaTag
                 "A",
                 null,
                 _stepId,
-                new List<Requirement>
+                new List<RequirementForCommand>
                 {
-                    new Requirement(_rd1Id, 1),
-                    new Requirement(_rd2Id, 1)
+                    new RequirementForCommand(_rd1Id, 1),
+                    new RequirementForCommand(_rd2Id, 1)
                 },
                 "Desc",
                 "Remark",
@@ -156,7 +155,7 @@ namespace Equinor.Procosys.Preservation.Command.Tests.TagCommands.CreateAreaTag
                 "AreaA",
                 null,
                 _stepId,
-                new List<Requirement>(),
+                new List<RequirementForCommand>(),
                 "DescriptionA",
                 "RemarkA",
                 "SA_A");
@@ -178,10 +177,10 @@ namespace Equinor.Procosys.Preservation.Command.Tests.TagCommands.CreateAreaTag
                 "AreaA",
                 null,
                 _stepId,
-                new List<Requirement>
+                new List<RequirementForCommand>
                 {
-                    new Requirement(_rd1Id, 1),
-                    new Requirement(_rd1Id, 1)
+                    new RequirementForCommand(_rd1Id, 1),
+                    new RequirementForCommand(_rd1Id, 1)
                 },
                 "DescriptionA",
                 "RemarkA",

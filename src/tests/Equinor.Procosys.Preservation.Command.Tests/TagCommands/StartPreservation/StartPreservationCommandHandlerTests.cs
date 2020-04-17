@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Equinor.Procosys.Preservation.Command.TagCommands.StartPreservation;
 using Equinor.Procosys.Preservation.Domain;
@@ -38,23 +37,23 @@ namespace Equinor.Procosys.Preservation.Command.Tests.TagCommands.StartPreservat
         public void Setup()
         {
             var stepMock = new Mock<Step>();
-            stepMock.SetupGet(s => s.Schema).Returns(TestPlant);
+            stepMock.SetupGet(s => s.Plant).Returns(TestPlant);
             _rd1Mock = new Mock<RequirementDefinition>();
             _rd1Mock.SetupGet(rd => rd.Id).Returns(_rdId1);
-            _rd1Mock.SetupGet(rd => rd.Schema).Returns(TestPlant);
+            _rd1Mock.SetupGet(rd => rd.Plant).Returns(TestPlant);
             _rd2Mock = new Mock<RequirementDefinition>();
             _rd2Mock.SetupGet(rd => rd.Id).Returns(_rdId2);
-            _rd2Mock.SetupGet(rd => rd.Schema).Returns(TestPlant);
+            _rd2Mock.SetupGet(rd => rd.Plant).Returns(TestPlant);
 
             _req1OnTag1 = new Requirement(TestPlant, _intervalWeeks, _rd1Mock.Object);
             _req2OnTag1 = new Requirement(TestPlant, _intervalWeeks, _rd2Mock.Object);
             _req1OnTag2 = new Requirement(TestPlant, _intervalWeeks, _rd1Mock.Object);
             _req2OnTag2 = new Requirement(TestPlant, _intervalWeeks, _rd2Mock.Object);
-            _tag1 = new Tag(TestPlant, TagType.Standard, "", "", "", "", "", "", "", "", "", "", "", stepMock.Object, new List<Requirement>
+            _tag1 = new Tag(TestPlant, TagType.Standard, "", "", stepMock.Object, new List<Requirement>
             {
                 _req1OnTag1, _req2OnTag1
             });
-            _tag2 = new Tag(TestPlant, TagType.Standard, "", "", "", "", "", "", "", "", "", "", "", stepMock.Object, new List<Requirement>
+            _tag2 = new Tag(TestPlant, TagType.Standard, "", "", stepMock.Object, new List<Requirement>
             {
                 _req1OnTag2, _req2OnTag2
             });

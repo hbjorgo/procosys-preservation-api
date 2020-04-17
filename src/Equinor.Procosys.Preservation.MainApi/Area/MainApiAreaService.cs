@@ -24,7 +24,7 @@ namespace Equinor.Procosys.Preservation.MainApi.Area
             _baseAddress = new Uri(options.CurrentValue.BaseAddress);
         }
 
-        public async Task<List<ProcosysArea>> GetAreas(string plant)
+        public async Task<List<ProcosysArea>> GetAreasAsync(string plant)
         {
             if (!await _plantApiService.IsPlantValidAsync(plant))
             {
@@ -32,10 +32,25 @@ namespace Equinor.Procosys.Preservation.MainApi.Area
             }
 
             var url = $"{_baseAddress}Library/Areas" +
-                $"?plantId={plant}" +
-                $"&api-version={_apiVersion}";
+                      $"?plantId={plant}" +
+                      $"&api-version={_apiVersion}";
 
             return await _mainApiClient.QueryAndDeserialize<List<ProcosysArea>>(url) ?? new List<ProcosysArea>();
+        }
+
+        public async Task<ProcosysArea> GetAreaAsync(string plant, string code)
+        {
+            if (!await _plantApiService.IsPlantValidAsync(plant))
+            {
+                throw new ArgumentException($"Invalid plant: {plant}");
+            }
+
+            var url = $"{_baseAddress}Library/Area" +
+                      $"?plantId={plant}" +
+                      $"&code={code}" +
+                      $"&api-version={_apiVersion}";
+
+            return await _mainApiClient.QueryAndDeserialize<ProcosysArea>(url);
         }
     }
 }

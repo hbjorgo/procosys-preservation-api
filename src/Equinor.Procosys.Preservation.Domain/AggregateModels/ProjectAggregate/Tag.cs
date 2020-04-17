@@ -7,7 +7,7 @@ using Equinor.Procosys.Preservation.Domain.Audit;
 
 namespace Equinor.Procosys.Preservation.Domain.AggregateModels.ProjectAggregate
 {
-    public class Tag : SchemaEntityBase, ICreationAuditable, IModificationAuditable
+    public class Tag : PlantEntityBase, ICreationAuditable, IModificationAuditable
     {
         private readonly List<Requirement> _requirements = new List<Requirement>();
         private readonly List<Action> _actions = new List<Action>();
@@ -15,7 +15,9 @@ namespace Equinor.Procosys.Preservation.Domain.AggregateModels.ProjectAggregate
         public const int TagNoLengthMax = 255;
         public const int TagFunctionCodeLengthMax = 255;
         public const int AreaCodeLengthMax = 255;
+        public const int AreaDescriptionLengthMax = 255;
         public const int DisciplineCodeLengthMax = 255;
+        public const int DisciplineDescriptionLengthMax = 255;
         public const int DescriptionLengthMax = 255;
         public const int RemarkLengthMax = 255;
         public const int StorageAreaLengthMax = 255;
@@ -26,22 +28,13 @@ namespace Equinor.Procosys.Preservation.Domain.AggregateModels.ProjectAggregate
         }
 
         public Tag(
-            string schema,
+            string plant,
             TagType tagType,
             string tagNo,
             string description,
-            string areaCode,
-            string calloff,
-            string disciplineCode,
-            string mcPkgNo,
-            string commPkgNo,
-            string purchaseOrderNo,
-            string remark,
-            string storageArea,
-            string tagFunctionCode,
             Step step, 
             IEnumerable<Requirement> requirements)
-            : base(schema)
+            : base(plant)
         {
             if (step == null)
             {
@@ -57,47 +50,40 @@ namespace Equinor.Procosys.Preservation.Domain.AggregateModels.ProjectAggregate
                 throw new Exception("Must have at least one requirement");
             }
                         
-            if (step.Schema != schema)
+            if (step.Plant != plant)
             {
-                throw new ArgumentException($"Can't relate item in {step.Schema} to item in {schema}");
+                throw new ArgumentException($"Can't relate item in {step.Plant} to item in {plant}");
             }
 
-            var requirement = reqList.FirstOrDefault(r => r.Schema != Schema);
+            var requirement = reqList.FirstOrDefault(r => r.Plant != Plant);
             if (requirement != null)
             {
-                throw new ArgumentException($"Can't relate item in {requirement.Schema} to item in {schema}");
+                throw new ArgumentException($"Can't relate item in {requirement.Plant} to item in {plant}");
             }
 
             TagType = tagType;
             Status = PreservationStatus.NotStarted;
             TagNo = tagNo;
             Description = description;
-            AreaCode = areaCode;
-            Calloff = calloff;
-            DisciplineCode = disciplineCode;
-            McPkgNo = mcPkgNo;
-            CommPkgNo = commPkgNo;
-            PurchaseOrderNo = purchaseOrderNo;
-            Remark = remark;
-            StorageArea = storageArea;
-            TagFunctionCode = tagFunctionCode;
             StepId = step.Id;
             _requirements.AddRange(reqList);
         }
 
         public PreservationStatus Status { get; private set; }
         public string AreaCode { get; private set; }
-        public string Calloff { get; private set; }
-        public string CommPkgNo { get; private set; }
+        public string AreaDescription { get; private set; }
+        public string Calloff { get; set; }
+        public string CommPkgNo { get; set; }
         public string DisciplineCode { get; private set; }
+        public string DisciplineDescription { get; private set; }
         public TagType TagType { get; private set; }
-        public string McPkgNo { get; private set; }
+        public string McPkgNo { get; set; }
         public string Description { get; private set; }
-        public string PurchaseOrderNo { get; private set; }
-        public string Remark { get; private set; }
-        public string StorageArea { get; private set; }
+        public string PurchaseOrderNo { get; set; }
+        public string Remark { get; set; }
+        public string StorageArea { get; set; }
         public int StepId { get; private set; }
-        public string TagFunctionCode { get; private set; }
+        public string TagFunctionCode { get; set; }
         public string TagNo { get; private set; }
         public IReadOnlyCollection<Requirement> Requirements => _requirements.AsReadOnly();
         public IReadOnlyCollection<Action> Actions => _actions.AsReadOnly();
@@ -111,6 +97,18 @@ namespace Equinor.Procosys.Preservation.Domain.AggregateModels.ProjectAggregate
 
         public void Void() => IsVoided = true;
         public void UnVoid() => IsVoided = false;
+
+        public void SetArea(string code, string description)
+        {
+            AreaCode = code;
+            AreaDescription = description;
+        }
+
+        public void SetDiscipline(string code, string description)
+        {
+            DisciplineCode = code;
+            DisciplineDescription = description;
+        }
 
         public void SetStep(Step step)
         {
@@ -129,9 +127,14 @@ namespace Equinor.Procosys.Preservation.Domain.AggregateModels.ProjectAggregate
                 throw new ArgumentNullException(nameof(requirement));
             }
             
-            if (requirement.Schema != Schema)
+            if (requirement.Plant != Plant)
             {
-                throw new ArgumentException($"Can't relate item in {requirement.Schema} to item in {Schema}");
+                throw new ArgumentException($"Can't relate item in {requirement.Plant} to item in {Plant}");
+            }
+            
+            if (_requirements.Any(r => r.RequirementDefinitionId == requirement.RequirementDefinitionId))
+            {
+                throw new ArgumentException($"{nameof(Tag)} {TagNo} already have requirement with definition {requirement.RequirementDefinitionId}");
             }
 
             _requirements.Add(requirement);
@@ -145,9 +148,9 @@ namespace Equinor.Procosys.Preservation.Domain.AggregateModels.ProjectAggregate
                 throw new ArgumentNullException(nameof(action));
             }
             
-            if (action.Schema != Schema)
+            if (action.Plant != Plant)
             {
-                throw new ArgumentException($"Can't relate item in {action.Schema} to item in {Schema}");
+                throw new ArgumentException($"Can't relate item in {action.Plant} to item in {Plant}");
             }
 
             _actions.Add(action);

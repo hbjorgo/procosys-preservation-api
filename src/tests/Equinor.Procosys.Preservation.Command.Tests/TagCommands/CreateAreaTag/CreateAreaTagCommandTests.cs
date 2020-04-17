@@ -3,7 +3,6 @@ using System.Linq;
 using Equinor.Procosys.Preservation.Command.TagCommands.CreateAreaTag;
 using Equinor.Procosys.Preservation.Domain.AggregateModels.ProjectAggregate;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Requirement = Equinor.Procosys.Preservation.Command.TagCommands.Requirement;
 
 namespace Equinor.Procosys.Preservation.Command.Tests.TagCommands.CreateAreaTag
 {
@@ -20,7 +19,7 @@ namespace Equinor.Procosys.Preservation.Command.Tests.TagCommands.CreateAreaTag
                 "AreaA",
                 null,
                 2,
-                new List<Requirement>{new Requirement(11, 12)},
+                new List<RequirementForCommand>{new RequirementForCommand(11, 12)},
                 "DescriptionA",
                 "RemarkA",
                 "SA_A");
@@ -36,150 +35,6 @@ namespace Equinor.Procosys.Preservation.Command.Tests.TagCommands.CreateAreaTag
             var requirement = dut.Requirements.First();
             Assert.AreEqual(11, requirement.RequirementDefinitionId);
             Assert.AreEqual(12, requirement.IntervalWeeks);
-        }
-
-        [TestMethod]
-        public void GetTagNo_ShouldReturnPreTagNo_WithDiscipline()
-        {
-            var dut = new CreateAreaTagCommand(
-                "",
-                TagType.PreArea,
-                "I",
-                null,
-                null,
-                0,
-                null,
-                null,
-                null,
-                null);
-
-            Assert.AreEqual("#PRE-I", dut.GetTagNo());
-        }
-
-        [TestMethod]
-        public void GetTagNo_ShouldReturnSiteTagNo_WithDisciplineAndSuffix()
-        {
-            var dut = new CreateAreaTagCommand(
-                "",
-                TagType.SiteArea,
-                "I",
-                null,
-                null,
-                0,
-                null,
-                null,
-                null,
-                null);
-
-            Assert.AreEqual("#SITE-I", dut.GetTagNo());
-        }
-
-        [TestMethod]
-        public void GetTagNo_ShouldReturnPreTagNo_WithDisciplineAndSuffix()
-        {
-            var dut = new CreateAreaTagCommand(
-                "",
-                TagType.PreArea,
-                "I",
-                null,
-                "XX",
-                0,
-                null,
-                null,
-                null,
-                null);
-
-            Assert.AreEqual("#PRE-I-XX", dut.GetTagNo());
-        }
-
-        [TestMethod]
-        public void GetTagNo_ShouldReturnSiteTagNo_WithDiscipline()
-        {
-            var dut = new CreateAreaTagCommand(
-                "",
-                TagType.SiteArea,
-                "I",
-                null,
-                "XX",
-                0,
-                null,
-                null,
-                null,
-                null);
-
-            Assert.AreEqual("#SITE-I-XX", dut.GetTagNo());
-        }
-
-        [TestMethod]
-        public void GetTagNo_ShouldReturnPreTagNo_WithDisciplineAndArea()
-        {
-            var dut = new CreateAreaTagCommand(
-                "",
-                TagType.PreArea,
-                "I",
-                "A300",
-                null,
-                0,
-                null,
-                null,
-                null,
-                null);
-
-            Assert.AreEqual("#PRE-I-A300", dut.GetTagNo());
-        }
-
-        [TestMethod]
-        public void GetTagNo_ShouldReturnSiteTagNo_WithDisciplineAndArea()
-        {
-            var dut = new CreateAreaTagCommand(
-                "",
-                TagType.SiteArea,
-                "I",
-                "A300",
-                null,
-                0,
-                null,
-                null,
-                null,
-                null);
-
-            Assert.AreEqual("#SITE-I-A300", dut.GetTagNo());
-        }
-
-        [TestMethod]
-        public void GetTagNo_ShouldReturnPreTagNo_WithDisciplineAndAreaAndSuffix()
-        {
-            var dut = new CreateAreaTagCommand(
-                "",
-                TagType.PreArea,
-                "I",
-                "A300",
-                "XX",
-                0,
-                null,
-                null,
-                null,
-                null);
-
-            Assert.AreEqual("#PRE-I-A300-XX", dut.GetTagNo());
-        }
-
-        [TestMethod]
-        public void GetTagNo_ShouldReturnSiteTagNo_WithDisciplineAndAreaAndSuffix()
-        {
-            var dut = new CreateAreaTagCommand(
-                "",
-                TagType.SiteArea,
-                "I",
-                "A300",
-                "XX",
-                0,
-                null,
-                null,
-                null,
-                null);
-
-            Assert.AreEqual("#SITE-I-A300-XX", dut.GetTagNo());
         }
 
         [TestMethod]

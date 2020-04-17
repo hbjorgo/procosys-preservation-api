@@ -25,7 +25,7 @@ namespace Equinor.Procosys.Preservation.MainApi.Discipline
             _baseAddress = new Uri(options.CurrentValue.BaseAddress);
         }
 
-        public async Task<List<ProcosysDiscipline>> GetDisciplines(string plant)
+        public async Task<List<ProcosysDiscipline>> GetDisciplinesAsync(string plant)
         {
             if (!await _plantApiService.IsPlantValidAsync(plant))
             {
@@ -33,11 +33,26 @@ namespace Equinor.Procosys.Preservation.MainApi.Discipline
             }
 
             var url = $"{_baseAddress}Library/Disciplines" +
-                $"?plantId={plant}" +
-                "&classifications=PRESERVATION" +
-                $"&api-version={_apiVersion}";
+                      $"?plantId={plant}" +
+                      "&classifications=PRESERVATION" +
+                      $"&api-version={_apiVersion}";
 
             return await _mainApiClient.QueryAndDeserialize<List<ProcosysDiscipline>>(url) ?? new List<ProcosysDiscipline>();
+        }
+
+        public async Task<ProcosysDiscipline> GetDisciplineAsync(string plant, string code)
+        {
+            if (!await _plantApiService.IsPlantValidAsync(plant))
+            {
+                throw new ArgumentException($"Invalid plant: {plant}");
+            }
+
+            var url = $"{_baseAddress}Library/Discipline" +
+                      $"?plantId={plant}" +
+                      $"&code={code}" +
+                      $"&api-version={_apiVersion}";
+
+            return await _mainApiClient.QueryAndDeserialize<ProcosysDiscipline>(url);
         }
     }
 }

@@ -7,7 +7,6 @@ using Equinor.Procosys.Preservation.Domain.AggregateModels.JourneyAggregate;
 using Equinor.Procosys.Preservation.Domain.AggregateModels.PersonAggregate;
 using Equinor.Procosys.Preservation.Domain.AggregateModels.ProjectAggregate;
 using Equinor.Procosys.Preservation.Domain.AggregateModels.RequirementTypeAggregate;
-using Equinor.Procosys.Preservation.Domain.Time;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
@@ -39,19 +38,19 @@ namespace Equinor.Procosys.Preservation.Command.Tests.TagCommands.BulkPreserve
         public void Setup()
         {
             var stepMock = new Mock<Step>();
-            stepMock.SetupGet(s => s.Schema).Returns(TestPlant);
+            stepMock.SetupGet(s => s.Plant).Returns(TestPlant);
             var rdMock = new Mock<RequirementDefinition>();
-            rdMock.SetupGet(rd => rd.Schema).Returns(TestPlant);
+            rdMock.SetupGet(rd => rd.Plant).Returns(TestPlant);
 
             _req1OnTag1WithTwoWeekInterval = new Requirement(TestPlant, TwoWeeksInterval, rdMock.Object);
             _req2OnTag1WithFourWeekInterval = new Requirement(TestPlant, FourWeeksInterval, rdMock.Object);
             _req1OnTag2WithTwoWeekInterval = new Requirement(TestPlant, TwoWeeksInterval, rdMock.Object);
             _req2OnTag2WithFourWeekInterval = new Requirement(TestPlant, FourWeeksInterval, rdMock.Object);
-            _tag1 = new Tag(TestPlant, TagType.Standard, "", "", "", "", "", "", "", "", "", "", "", stepMock.Object, new List<Requirement>
+            _tag1 = new Tag(TestPlant, TagType.Standard, "", "", stepMock.Object, new List<Requirement>
             {
                 _req1OnTag1WithTwoWeekInterval, _req2OnTag1WithFourWeekInterval
             });
-            _tag2 = new Tag(TestPlant, TagType.Standard, "", "", "", "", "", "", "", "", "", "", "", stepMock.Object, new List<Requirement>
+            _tag2 = new Tag(TestPlant, TagType.Standard, "", "", stepMock.Object, new List<Requirement>
             {
                 _req1OnTag2WithTwoWeekInterval, _req2OnTag2WithFourWeekInterval
             });
@@ -68,7 +67,7 @@ namespace Equinor.Procosys.Preservation.Command.Tests.TagCommands.BulkPreserve
             _projectRepoMock.Setup(r => r.GetTagsByTagIdsAsync(tagIds)).Returns(Task.FromResult(tags));
             _personRepoMock = new Mock<IPersonRepository>();
             _personRepoMock
-                .Setup(x => x.GetByOidAsync(It.Is<Guid>(x => x == _currentUserOid)))
+                .Setup(p => p.GetByOidAsync(It.Is<Guid>(x => x == _currentUserOid)))
                 .Returns(Task.FromResult(new Person(_currentUserOid, "Test", "User")));
             _command = new BulkPreserveCommand(tagIds);
 

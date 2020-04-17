@@ -10,7 +10,6 @@ using Equinor.Procosys.Preservation.MainApi.Discipline;
 using Equinor.Procosys.Preservation.MainApi.Project;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Requirement = Equinor.Procosys.Preservation.Command.TagCommands.Requirement;
 
 namespace Equinor.Procosys.Preservation.Command.Tests.TagCommands.CreateAreaTag
 {
@@ -23,6 +22,8 @@ namespace Equinor.Procosys.Preservation.Command.Tests.TagCommands.CreateAreaTag
         private const int ReqDefId2 = 199;
         private const int Interval1 = 2;
         private const int Interval2 = 3;
+        private const string DisciplineDescription = "DisciplineDescription";
+        private const string AreaDescription = "AreaDescription";
 
         private Mock<Step> _stepMock;
         private Mock<IJourneyRepository> _journeyRepositoryMock;
@@ -42,7 +43,7 @@ namespace Equinor.Procosys.Preservation.Command.Tests.TagCommands.CreateAreaTag
             // Arrange
             _stepMock = new Mock<Step>();
             _stepMock.SetupGet(s => s.Id).Returns(StepId);
-            _stepMock.SetupGet(s => s.Schema).Returns(TestPlant);
+            _stepMock.SetupGet(s => s.Plant).Returns(TestPlant);
             
             _journeyRepositoryMock = new Mock<IJourneyRepository>();
             _journeyRepositoryMock
@@ -60,33 +61,34 @@ namespace Equinor.Procosys.Preservation.Command.Tests.TagCommands.CreateAreaTag
             _rtRepositoryMock = new Mock<IRequirementTypeRepository>();
             var rdMock1 = new Mock<RequirementDefinition>();
             rdMock1.SetupGet(x => x.Id).Returns(ReqDefId1);
-            rdMock1.SetupGet(x => x.Schema).Returns(TestPlant);
+            rdMock1.SetupGet(x => x.Plant).Returns(TestPlant);
             var rdMock2 = new Mock<RequirementDefinition>();
             rdMock2.SetupGet(x => x.Id).Returns(ReqDefId2);
-            rdMock2.SetupGet(x => x.Schema).Returns(TestPlant);
+            rdMock2.SetupGet(x => x.Plant).Returns(TestPlant);
             _rtRepositoryMock
                 .Setup(r => r.GetRequirementDefinitionsByIdsAsync(new List<int> {ReqDefId1, ReqDefId2}))
                 .Returns(Task.FromResult(new List<RequirementDefinition> {rdMock1.Object, rdMock2.Object}));
 
-            var disciplineCode = "D";
-            var areaCode = "A";
-
             _projectApiServiceMock = new Mock<IProjectApiService>();
-            _projectApiServiceMock.Setup(s => s.GetProject(TestPlant, TestProjectName))
+            _projectApiServiceMock.Setup(s => s.GetProjectAsync(TestPlant, TestProjectName))
                 .Returns(Task.FromResult(new ProcosysProject {Description = "ProjectDescription"}));
 
+            var disciplineCode = "D";
             _disciplineApiServiceMock = new Mock<IDisciplineApiService>();
-            _disciplineApiServiceMock.Setup(s => s.GetDisciplines(TestPlant))
-                .Returns(Task.FromResult(new List<ProcosysDiscipline>
+            _disciplineApiServiceMock.Setup(s => s.GetDisciplineAsync(TestPlant, disciplineCode))
+                .Returns(Task.FromResult(new ProcosysDiscipline
                 {
-                    new ProcosysDiscipline {Code = disciplineCode, Description = "DisciplineDescription"}
+                    Code = disciplineCode,
+                    Description = DisciplineDescription
                 }));
 
+            var areaCode = "A";
             _areaApiServiceMock = new Mock<IAreaApiService>();
-            _areaApiServiceMock.Setup(s => s.GetAreas(TestPlant))
-                .Returns(Task.FromResult(new List<ProcosysArea>
+            _areaApiServiceMock.Setup(s => s.GetAreaAsync(TestPlant, areaCode))
+                .Returns(Task.FromResult(new ProcosysArea
                 {
-                    new ProcosysArea {Code = areaCode, Description = "AreaDescription"}
+                    Code = areaCode,
+                    Description = AreaDescription
                 }));
 
             _command = new CreateAreaTagCommand(
@@ -96,10 +98,10 @@ namespace Equinor.Procosys.Preservation.Command.Tests.TagCommands.CreateAreaTag
                 areaCode,
                 null,
                 StepId,
-                new List<Requirement>
+                new List<RequirementForCommand>
                 {
-                    new Requirement(ReqDefId1, Interval1),
-                    new Requirement(ReqDefId2, Interval2),
+                    new RequirementForCommand(ReqDefId1, Interval1),
+                    new RequirementForCommand(ReqDefId2, Interval2),
                 },
                 null,
                 "Remark",
@@ -128,7 +130,6 @@ namespace Equinor.Procosys.Preservation.Command.Tests.TagCommands.CreateAreaTag
 
             // Assert
             Assert.AreEqual(0, result.Errors.Count);
-            Assert.AreEqual(0, _projectAddedToRepository.Id);
             Assert.AreEqual(TestProjectName, _projectAddedToRepository.Name);
             Assert.AreEqual("ProjectDescription", _projectAddedToRepository.Description);
         }
@@ -202,17 +203,18 @@ namespace Equinor.Procosys.Preservation.Command.Tests.TagCommands.CreateAreaTag
         private void AssertTagProperties(CreateAreaTagCommand command, Tag tagAddedToProject)
         {
             Assert.AreEqual(command.AreaCode, tagAddedToProject.AreaCode);
+            Assert.AreEqual(AreaDescription, tagAddedToProject.AreaDescription);
             Assert.IsNull(tagAddedToProject.Calloff);
             Assert.IsNull(tagAddedToProject.CommPkgNo);
             Assert.AreEqual(command.DisciplineCode, tagAddedToProject.DisciplineCode);
-            Assert.AreEqual(0, tagAddedToProject.Id);
+            Assert.AreEqual(DisciplineDescription, tagAddedToProject.DisciplineDescription);
             Assert.AreEqual(command.TagType, tagAddedToProject.TagType);
             Assert.IsNull(tagAddedToProject.McPkgNo);
             Assert.AreEqual(command.Description, tagAddedToProject.Description);
             Assert.AreEqual(command.Remark, tagAddedToProject.Remark);
             Assert.AreEqual(command.StorageArea, tagAddedToProject.StorageArea);
             Assert.IsNull(tagAddedToProject.PurchaseOrderNo);
-            Assert.AreEqual(TestPlant, tagAddedToProject.Schema);
+            Assert.AreEqual(TestPlant, tagAddedToProject.Plant);
             Assert.AreEqual(StepId, tagAddedToProject.StepId);
             Assert.IsNull(tagAddedToProject.TagFunctionCode);
             Assert.AreEqual(command.GetTagNo(), tagAddedToProject.TagNo);

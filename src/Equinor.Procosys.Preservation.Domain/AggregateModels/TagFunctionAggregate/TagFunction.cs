@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Equinor.Procosys.Preservation.Domain.AggregateModels.PersonAggregate;
 using Equinor.Procosys.Preservation.Domain.Audit;
 
 namespace Equinor.Procosys.Preservation.Domain.AggregateModels.TagFunctionAggregate
 {
-    public class TagFunction : SchemaEntityBase, IAggregateRoot, ICreationAuditable, IModificationAuditable
+    public class TagFunction : PlantEntityBase, IAggregateRoot, ICreationAuditable, IModificationAuditable
     {
         public const int CodeLengthMax = 255;
         public const int DescriptionLengthMax = 255;
@@ -18,8 +19,8 @@ namespace Equinor.Procosys.Preservation.Domain.AggregateModels.TagFunctionAggreg
         {
         }
 
-        public TagFunction(string schema, string code, string description, string registerCode)
-            : base(schema)
+        public TagFunction(string plant, string code, string description, string registerCode)
+            : base(plant)
         {
             if (string.IsNullOrEmpty(code))
             {
@@ -57,12 +58,32 @@ namespace Equinor.Procosys.Preservation.Domain.AggregateModels.TagFunctionAggreg
                 throw new ArgumentNullException(nameof(requirement));
             }
             
-            if (requirement.Schema != Schema)
+            if (requirement.Plant != Plant)
             {
-                throw new ArgumentException($"Can't relate item in {requirement.Schema} to item in {Schema}");
+                throw new ArgumentException($"Can't relate item in {requirement.Plant} to item in {Plant}");
+            }
+
+            if (_requirements.Any(r => r.RequirementDefinitionId == requirement.RequirementDefinitionId))
+            {
+                throw new ArgumentException($"{nameof(TagFunction)} {Code} in register {RegisterCode} already have requirement with definition {requirement.RequirementDefinitionId}");
             }
 
             _requirements.Add(requirement);
+        }
+
+        public void RemoveRequirement(TagFunctionRequirement requirement)
+        {
+            if (requirement == null)
+            {
+                throw new ArgumentNullException(nameof(requirement));
+            }
+            
+            if (requirement.Plant != Plant)
+            {
+                throw new ArgumentException($"Can't remove item in {requirement.Plant} from item in {Plant}");
+            }
+
+            _requirements.Remove(requirement);
         }
 
         public void SetCreated(Person createdBy)

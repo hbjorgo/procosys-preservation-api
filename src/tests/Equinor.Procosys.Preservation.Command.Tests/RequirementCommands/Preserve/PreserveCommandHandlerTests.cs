@@ -18,7 +18,6 @@ namespace Equinor.Procosys.Preservation.Command.Tests.RequirementCommands.Preser
     {
         private const int TagId = 7;
         private const int RequirementId = 71;
-        private const int PreservedById = 81;
         private const int Interval = 2;
 
         private Guid _currentUserOid = new Guid("12345678-1234-1234-1234-123456789123");
@@ -36,16 +35,16 @@ namespace Equinor.Procosys.Preservation.Command.Tests.RequirementCommands.Preser
         public void Setup()
         {
             var stepMock = new Mock<Step>();
-            stepMock.SetupGet(s => s.Schema).Returns(TestPlant);
+            stepMock.SetupGet(s => s.Plant).Returns(TestPlant);
             var rdMock = new Mock<RequirementDefinition>();
-            rdMock.SetupGet(rd => rd.Schema).Returns(TestPlant);
+            rdMock.SetupGet(rd => rd.Plant).Returns(TestPlant);
 
             var requirementMock = new Mock<Requirement>(TestPlant, Interval, rdMock.Object);
             requirementMock.SetupGet(r => r.Id).Returns(RequirementId);
-            requirementMock.SetupGet(r => r.Schema).Returns(TestPlant);
+            requirementMock.SetupGet(r => r.Plant).Returns(TestPlant);
             _requirement = requirementMock.Object;
 
-            _tag = new Tag(TestPlant, TagType.Standard, "", "", "", "", "", "", "", "", "", "", "", stepMock.Object, new List<Requirement>
+            _tag = new Tag(TestPlant, TagType.Standard, "", "", stepMock.Object, new List<Requirement>
             {
                 _requirement
             });
@@ -57,7 +56,7 @@ namespace Equinor.Procosys.Preservation.Command.Tests.RequirementCommands.Preser
             _projectRepoMock.Setup(r => r.GetTagByTagIdAsync(TagId)).Returns(Task.FromResult(_tag));
             _personRepoMock = new Mock<IPersonRepository>();
             _personRepoMock
-                .Setup(x => x.GetByOidAsync(It.Is<Guid>(x => x == _currentUserOid)))
+                .Setup(p => p.GetByOidAsync(It.Is<Guid>(x => x == _currentUserOid)))
                 .Returns(Task.FromResult(new Person(_currentUserOid, "Test", "User")));
 
             _command = new PreserveCommand(TagId, RequirementId);

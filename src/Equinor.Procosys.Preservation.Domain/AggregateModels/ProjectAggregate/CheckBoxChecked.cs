@@ -13,12 +13,9 @@ namespace Equinor.Procosys.Preservation.Domain.AggregateModels.ProjectAggregate
         {
         }
 
-        public CheckBoxChecked(string schema, Field field)
-            :base(schema, field)
+        public CheckBoxChecked(string plant, Field field)
+            :base(plant, field)
         {
         }
-
-        public static bool IsValidValue(string value, out bool isChecked)
-            => bool.TryParse(value, out isChecked);
     }
 }

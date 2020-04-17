@@ -46,7 +46,7 @@ namespace Equinor.Procosys.Preservation.Infrastructure.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
-                    b.Property<string>("Schema")
+                    b.Property<string>("Plant")
                         .IsRequired()
                         .HasColumnType("nvarchar(255)")
                         .HasMaxLength(255);
@@ -93,18 +93,19 @@ namespace Equinor.Procosys.Preservation.Infrastructure.Migrations
                     b.Property<int?>("ModifiedById")
                         .HasColumnType("int");
 
-                    b.Property<int>("ResponsibleId")
-                        .HasColumnType("int");
 
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
-                    b.Property<string>("Schema")
+                    b.Property<string>("Plant")
                         .IsRequired()
                         .HasColumnType("nvarchar(255)")
                         .HasMaxLength(255);
+
+                    b.Property<int>("ResponsibleId")
+                        .HasColumnType("int");
 
                     b.Property<int>("SortKey")
                         .HasColumnType("int");
@@ -156,7 +157,7 @@ namespace Equinor.Procosys.Preservation.Infrastructure.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
-                    b.Property<string>("Schema")
+                    b.Property<string>("Plant")
                         .IsRequired()
                         .HasColumnType("nvarchar(255)")
                         .HasMaxLength(255);
@@ -251,7 +252,7 @@ namespace Equinor.Procosys.Preservation.Infrastructure.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
-                    b.Property<string>("Schema")
+                    b.Property<string>("Plant")
                         .IsRequired()
                         .HasColumnType("nvarchar(255)")
                         .HasMaxLength(255);
@@ -305,7 +306,7 @@ namespace Equinor.Procosys.Preservation.Infrastructure.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
-                    b.Property<string>("Schema")
+                    b.Property<string>("Plant")
                         .IsRequired()
                         .HasColumnType("nvarchar(255)")
                         .HasMaxLength(255);
@@ -349,6 +350,11 @@ namespace Equinor.Procosys.Preservation.Infrastructure.Migrations
                     b.Property<int?>("ModifiedById")
                         .HasColumnType("int");
 
+                    b.Property<string>("Plant")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)")
+                        .HasMaxLength(255);
+
                     b.Property<int?>("PreservationRecordId")
                         .HasColumnType("int");
 
@@ -360,7 +366,7 @@ namespace Equinor.Procosys.Preservation.Infrastructure.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
-                    b.Property<string>("Schema")
+                    b.Property<string>("Plant")
                         .IsRequired()
                         .HasColumnType("nvarchar(255)")
                         .HasMaxLength(255);
@@ -402,6 +408,11 @@ namespace Equinor.Procosys.Preservation.Infrastructure.Migrations
                     b.Property<int>("CreatedById")
                         .HasColumnType("int");
 
+                    b.Property<string>("Plant")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)")
+                        .HasMaxLength(255);
+
                     b.Property<DateTime>("PreservedAtUtc")
                         .HasColumnType("datetime2");
 
@@ -413,7 +424,7 @@ namespace Equinor.Procosys.Preservation.Infrastructure.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
-                    b.Property<string>("Schema")
+                    b.Property<string>("Plant")
                         .IsRequired()
                         .HasColumnType("nvarchar(255)")
                         .HasMaxLength(255);
@@ -464,7 +475,7 @@ namespace Equinor.Procosys.Preservation.Infrastructure.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
-                    b.Property<string>("Schema")
+                    b.Property<string>("Plant")
                         .IsRequired()
                         .HasColumnType("nvarchar(255)")
                         .HasMaxLength(255);
@@ -514,7 +525,7 @@ namespace Equinor.Procosys.Preservation.Infrastructure.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
-                    b.Property<string>("Schema")
+                    b.Property<string>("Plant")
                         .IsRequired()
                         .HasColumnType("nvarchar(255)")
                         .HasMaxLength(255);
@@ -555,6 +566,10 @@ namespace Equinor.Procosys.Preservation.Infrastructure.Migrations
                         .HasColumnType("nvarchar(255)")
                         .HasMaxLength(255);
 
+                    b.Property<string>("AreaDescription")
+                        .HasColumnType("nvarchar(255)")
+                        .HasMaxLength(255);
+
                     b.Property<string>("Calloff")
                         .HasColumnType("nvarchar(max)");
 
@@ -576,6 +591,10 @@ namespace Equinor.Procosys.Preservation.Infrastructure.Migrations
                         .HasColumnType("nvarchar(255)")
                         .HasMaxLength(255);
 
+                    b.Property<string>("DisciplineDescription")
+                        .HasColumnType("nvarchar(255)")
+                        .HasMaxLength(255);
+
                     b.Property<bool>("IsVoided")
                         .HasColumnType("bit");
 
@@ -590,6 +609,11 @@ namespace Equinor.Procosys.Preservation.Infrastructure.Migrations
 
                     b.Property<DateTime?>("NextDueTimeUtc")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Plant")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)")
+                        .HasMaxLength(255);
 
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");
@@ -606,7 +630,7 @@ namespace Equinor.Procosys.Preservation.Infrastructure.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
-                    b.Property<string>("Schema")
+                    b.Property<string>("Plant")
                         .IsRequired()
                         .HasColumnType("nvarchar(255)")
                         .HasMaxLength(255);
@@ -695,7 +719,7 @@ namespace Equinor.Procosys.Preservation.Infrastructure.Migrations
                     b.Property<byte[]>("RowVersion")
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<string>("Schema")
+                    b.Property<string>("Plant")
                         .IsRequired()
                         .HasColumnType("nvarchar(255)")
                         .HasMaxLength(255);
@@ -756,7 +780,7 @@ namespace Equinor.Procosys.Preservation.Infrastructure.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
-                    b.Property<string>("Schema")
+                    b.Property<string>("Plant")
                         .IsRequired()
                         .HasColumnType("nvarchar(255)")
                         .HasMaxLength(255);
@@ -812,7 +836,7 @@ namespace Equinor.Procosys.Preservation.Infrastructure.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
-                    b.Property<string>("Schema")
+                    b.Property<string>("Plant")
                         .IsRequired()
                         .HasColumnType("nvarchar(255)")
                         .HasMaxLength(255);
@@ -866,7 +890,7 @@ namespace Equinor.Procosys.Preservation.Infrastructure.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
-                    b.Property<string>("Schema")
+                    b.Property<string>("Plant")
                         .IsRequired()
                         .HasColumnType("nvarchar(255)")
                         .HasMaxLength(255);
@@ -916,7 +940,7 @@ namespace Equinor.Procosys.Preservation.Infrastructure.Migrations
                     b.Property<int?>("ModifiedById")
                         .HasColumnType("int");
 
-                    b.Property<string>("RegisterCode")
+                    b.Property<string>("Plant")
                         .IsRequired()
                         .HasColumnType("nvarchar(255)")
                         .HasMaxLength(255);
@@ -926,7 +950,7 @@ namespace Equinor.Procosys.Preservation.Infrastructure.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
-                    b.Property<string>("Schema")
+                    b.Property<string>("Plant")
                         .IsRequired()
                         .HasColumnType("nvarchar(255)")
                         .HasMaxLength(255);
@@ -973,7 +997,7 @@ namespace Equinor.Procosys.Preservation.Infrastructure.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
-                    b.Property<string>("Schema")
+                    b.Property<string>("Plant")
                         .IsRequired()
                         .HasColumnType("nvarchar(255)")
                         .HasMaxLength(255);

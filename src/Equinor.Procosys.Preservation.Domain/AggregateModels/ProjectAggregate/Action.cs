@@ -4,7 +4,7 @@ using Equinor.Procosys.Preservation.Domain.Audit;
 
 namespace Equinor.Procosys.Preservation.Domain.AggregateModels.ProjectAggregate
 {
-    public class Action : SchemaEntityBase, ICreationAuditable, IModificationAuditable
+    public class Action : PlantEntityBase, ICreationAuditable, IModificationAuditable
     {
         public const int TitleLengthMax = 128;
         public const int DescriptionLengthMax = 4096;
@@ -13,16 +13,16 @@ namespace Equinor.Procosys.Preservation.Domain.AggregateModels.ProjectAggregate
         {
         }
 
-        public Action(string schema, string title, string description, DateTime? dueTimeUtc)
-            : base(schema)
+        public Action(string plant, string title, string description, DateTime? dueTimeUtc)
+            : base(plant)
         {
             Title = title;
             Description = description;
             SetDueTime(dueTimeUtc);
         }
 
-        public string Title { get; private set; }
-        public string Description { get; private set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
         public DateTime? DueTimeUtc { get; private set; }
         public DateTime? ClosedAtUtc { get; private set; }
         public int? ClosedById { get; private set; }

@@ -26,7 +26,7 @@ namespace Equinor.Procosys.Preservation.Query.GetTagDetails
                                     join journey in _context.QuerySet<Journey>() on EF.Property<int>(step, "JourneyId") equals journey.Id
                                     join mode in _context.QuerySet<Mode>() on step.ModeId equals mode.Id
                                     join responsible in _context.QuerySet<Responsible>() on step.ResponsibleId equals responsible.Id
-                                    where tag.Id == request.Id
+                                    where tag.Id == request.TagId
                                     select new TagDetailsDto
                                     {
                                         AreaCode = tag.AreaCode,
@@ -44,11 +44,11 @@ namespace Equinor.Procosys.Preservation.Query.GetTagDetails
                                         TagNo = tag.TagNo,
                                         TagType = tag.TagType,
                                         ReadyToBePreserved = tag.IsReadyToBePreserved()
-                                    }).FirstOrDefaultAsync(cancellationToken);
+                                    }).SingleOrDefaultAsync(cancellationToken);
 
             if (tagDetails == null)
             {
-                return new NotFoundResult<TagDetailsDto>($"Entity with ID {request.Id} not found");
+                return new NotFoundResult<TagDetailsDto>($"Entity with ID {request.TagId} not found");
             }
 
             return new SuccessResult<TagDetailsDto>(tagDetails);

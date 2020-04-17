@@ -15,39 +15,10 @@ namespace Equinor.Procosys.Preservation.Domain.AggregateModels.ProjectAggregate
         {
         }
 
-        public NumberValue(string schema, Field field, string value)
-            : base(schema, field)
-        {
-            if (!IsValidValue(value, out var number))
-            {
-                throw new ArgumentException($"Value {value} is not a legal value for a {nameof(NumberValue)}");
-            }
-
-            if (field.Schema != schema)
-            {
-                throw new ArgumentException($"Can't relate item in {field.Schema} to item in {schema}");
-            }
-
-            Value = number;
-        }
+        public NumberValue(string plant, Field field, double? value)
+            : base(plant, field) =>
+            Value = value;
 
         public double? Value { get; private set; }
-
-        public static bool IsValidValue(string value, out double? number)
-        {
-            number = null;
-            if (string.IsNullOrEmpty(value) || value.ToUpper() == "NA" || value.ToUpper() == "N/A")
-            {
-                return true;
-            }
-
-            if (double.TryParse(value, out var n))
-            {
-                number = n;
-                return true;
-            }
-
-            return false;
-        }
     }
 }
