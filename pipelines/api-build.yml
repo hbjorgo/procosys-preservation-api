@@ -53,20 +53,20 @@ stages:
       repository: '${{ variables.repositoryName }}'
       dockerRegistryServiceConnection: '$(dockerRegistryServiceConnectionName)'
 
-  # Docker Build and Push (Master Only)
-  - template: /templates/pipelines/dockerbuild-preservation.yml@templates
-    parameters:
-      deploymentName: 'docker_build_and_push_master_only'
-      dependsOn: ''
-      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-      env: 'pcs-${{ variables.envName }}'
-      envGroup: '${{ variables.envGroupName }}'
-      buildCommand: buildAndPush
-      versionNumber: ${{ variables.versionNumber }}
-      dockerfilePath: '${{ variables.dockerfilePath }}'
-      buildContext: '$(Build.SourcesDirectory)/src'
-      repository: '${{ variables.repositoryName }}'
-      dockerRegistryServiceConnection: '$(dockerRegistryServiceConnectionName)'
+  # # Docker Build and Push (Master Only)
+  # - template: /templates/pipelines/dockerbuild-preservation.yml@templates
+  #   parameters:
+  #     deploymentName: 'docker_build_and_push_master_only'
+  #     dependsOn: ''
+  #     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  #     env: 'pcs-${{ variables.envName }}'
+  #     envGroup: '${{ variables.envGroupName }}'
+  #     buildCommand: buildAndPush
+  #     versionNumber: ${{ variables.versionNumber }}
+  #     dockerfilePath: '${{ variables.dockerfilePath }}'
+  #     buildContext: '$(Build.SourcesDirectory)/src'
+  #     repository: '${{ variables.repositoryName }}'
+  #     dockerRegistryServiceConnection: '$(dockerRegistryServiceConnectionName)'
 
   # Create Migration Script
   - template: /templates/pipelines/createsqlmigrate-preservation.yml@templates
@@ -76,143 +76,143 @@ stages:
       envGroup: '${{ variables.envGroupName }}'
       serviceConnection: '${{ variables.nonProdServiceConnection }}'
 
-# Dev deploy stage
-- stage: dev
-  displayName: 'Dev'
-  dependsOn: 'common'
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-  variables:
-    envName: 'dev'
-    envRg: '${{ variables.envRgName }}'
-    envGroupName: '$(globalPrefix)-$(fullAppName)-api-${{ variables.envName }}'
-    serviceConnection: '${{ variables.nonProdServiceConnection }}'
-    appServicePlan: '${{ variables.nonProdappServicePlanName }}'
-    containerRegistry: '${{ variables.containerRegistryName }}' 
-    aspNetCoreEnvironment: 'Development'
+# # Dev deploy stage
+# - stage: dev
+#   displayName: 'Dev'
+#   dependsOn: 'common'
+#   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+#   variables:
+#     envName: 'dev'
+#     envRg: '${{ variables.envRgName }}'
+#     envGroupName: '$(globalPrefix)-$(fullAppName)-api-${{ variables.envName }}'
+#     serviceConnection: '${{ variables.nonProdServiceConnection }}'
+#     appServicePlan: '${{ variables.nonProdappServicePlanName }}'
+#     containerRegistry: '${{ variables.containerRegistryName }}' 
+#     aspNetCoreEnvironment: 'Development'
 
-  jobs:
-  # Run Migration Script
-  - template: /templates/pipelines/runsqlmigrate-preservation.yml@templates
-    parameters:
-      dependsOn: ''
-      #deploymentName: 'run_migration_script'
-      deploymentName: 'will_not_run_migration_script_until_november_fix'
-      envGroup: '${{ variables.envGroupName }}'
-      serviceConnection: '${{ variables.serviceConnection }}'
-      kvName: '${{ variables.commonKeyVault }}'
-      kvRgName: 'pcs-common-rg'
-      kvSecret: '${{ variables.sqlAdminUserName }}-${{ variables.envName }}'
-      serverName: '${{ variables.sqlServerName }}.database.windows.net'
-      databaseName: '${{ variables.sqlDatabaseName }}'
+#   jobs:
+#   # Run Migration Script
+#   - template: /templates/pipelines/runsqlmigrate-preservation.yml@templates
+#     parameters:
+#       dependsOn: ''
+#       #deploymentName: 'run_migration_script'
+#       deploymentName: 'will_not_run_migration_script_until_november_fix'
+#       envGroup: '${{ variables.envGroupName }}'
+#       serviceConnection: '${{ variables.serviceConnection }}'
+#       kvName: '${{ variables.commonKeyVault }}'
+#       kvRgName: 'pcs-common-rg'
+#       kvSecret: '${{ variables.sqlAdminUserName }}-${{ variables.envName }}'
+#       serverName: '${{ variables.sqlServerName }}.database.windows.net'
+#       databaseName: '${{ variables.sqlDatabaseName }}'
 
-  # Deploy to AKS
-  - template: /templates/pipelines/kubernetes/preservation-deploy.yml@templates
-    parameters:
-      deploymentName: 'deploy_to_k8s'
-      dependsOn: ''
-      serviceConnection: '${{ variables.serviceConnection }}'
-      env: '${{ variables.envName }}'
-      envRg: 'pcs-hosting-rg'
-      envGroup: '${{ variables.envGroupName }}'
-      dockerImage: 'procosys.azurecr.io/preservation/api:${{ variables.versionNumber }}$(Build.BuildId)'
-      clusterName: 'pcs-aks-test'
-      kvClientIdName: '${{ variables.kvClientIdName }}'
-      kvUriName: '${{ variables.kvUriName }}'
-      kvClientSecretName: '${{ variables.kvClientSecretName }}'
-      kvIkeySecretName: '${{ variables.kvIkeySecretName }}'
-      kvName: '${{ variables.kvName }}'
-      kvRgName: '${{ variables.envRgName }}'
-      aspNetCoreEnvironment: '${{ variables.aspNetCoreEnvironment }}'
+#   # Deploy to AKS
+#   - template: /templates/pipelines/kubernetes/preservation-deploy.yml@templates
+#     parameters:
+#       deploymentName: 'deploy_to_k8s'
+#       dependsOn: ''
+#       serviceConnection: '${{ variables.serviceConnection }}'
+#       env: '${{ variables.envName }}'
+#       envRg: 'pcs-hosting-rg'
+#       envGroup: '${{ variables.envGroupName }}'
+#       dockerImage: 'procosys.azurecr.io/preservation/api:${{ variables.versionNumber }}$(Build.BuildId)'
+#       clusterName: 'pcs-aks-test'
+#       kvClientIdName: '${{ variables.kvClientIdName }}'
+#       kvUriName: '${{ variables.kvUriName }}'
+#       kvClientSecretName: '${{ variables.kvClientSecretName }}'
+#       kvIkeySecretName: '${{ variables.kvIkeySecretName }}'
+#       kvName: '${{ variables.kvName }}'
+#       kvRgName: '${{ variables.envRgName }}'
+#       aspNetCoreEnvironment: '${{ variables.aspNetCoreEnvironment }}'
 
-# Test deploy stage
-- stage: test
-  displayName: 'Test'
-  dependsOn: 'common'
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-  variables:
-    envName: 'test'
-    envRg: '${{ variables.envRgName }}'
-    envGroupName: '$(globalPrefix)-$(fullAppName)-api-${{ variables.envName }}'
-    serviceConnection: '${{ variables.nonProdServiceConnection }}'
-    appServicePlan: '${{ variables.nonProdappServicePlanName }}'
-    containerRegistry: '${{ variables.containerRegistryName }}' 
-    aspNetCoreEnvironment: 'Production'
+# # Test deploy stage
+# - stage: test
+#   displayName: 'Test'
+#   dependsOn: 'common'
+#   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+#   variables:
+#     envName: 'test'
+#     envRg: '${{ variables.envRgName }}'
+#     envGroupName: '$(globalPrefix)-$(fullAppName)-api-${{ variables.envName }}'
+#     serviceConnection: '${{ variables.nonProdServiceConnection }}'
+#     appServicePlan: '${{ variables.nonProdappServicePlanName }}'
+#     containerRegistry: '${{ variables.containerRegistryName }}' 
+#     aspNetCoreEnvironment: 'Production'
 
-  jobs:
-  # Run Migration Script
-  - template: /templates/pipelines/runsqlmigrate-preservation.yml@templates
-    parameters:
-      dependsOn: ''
-      #deploymentName: 'run_migration_script'
-      deploymentName: 'will_not_run_migration_script_until_november_fix'
-      envGroup: '${{ variables.envGroupName }}'
-      serviceConnection: '${{ variables.serviceConnection }}'
-      kvName: '${{ variables.commonKeyVault }}'
-      kvRgName: 'pcs-common-rg'
-      kvSecret: '${{ variables.sqlAdminUserName }}-${{ variables.envName }}'
-      serverName: '${{ variables.sqlServerName }}.database.windows.net'
-      databaseName: '${{ variables.sqlDatabaseName }}'
+#   jobs:
+#   # Run Migration Script
+#   - template: /templates/pipelines/runsqlmigrate-preservation.yml@templates
+#     parameters:
+#       dependsOn: ''
+#       #deploymentName: 'run_migration_script'
+#       deploymentName: 'will_not_run_migration_script_until_november_fix'
+#       envGroup: '${{ variables.envGroupName }}'
+#       serviceConnection: '${{ variables.serviceConnection }}'
+#       kvName: '${{ variables.commonKeyVault }}'
+#       kvRgName: 'pcs-common-rg'
+#       kvSecret: '${{ variables.sqlAdminUserName }}-${{ variables.envName }}'
+#       serverName: '${{ variables.sqlServerName }}.database.windows.net'
+#       databaseName: '${{ variables.sqlDatabaseName }}'
 
-  # Deploy to AKS
-  - template: /templates/pipelines/kubernetes/preservation-deploy.yml@templates
-    parameters:
-      deploymentName: 'deploy_to_k8s'
-      dependsOn: ''
-      serviceConnection: '${{ variables.serviceConnection }}'
-      env: '${{ variables.envName }}'
-      envRg: 'pcs-hosting-rg'
-      envGroup: '${{ variables.envGroupName }}'
-      dockerImage: 'procosys.azurecr.io/preservation/api:${{ variables.versionNumber }}$(Build.BuildId)'
-      clusterName: 'pcs-aks-test'
-      kvClientIdName: '${{ variables.kvClientIdName }}'
-      kvUriName: '${{ variables.kvUriName }}'
-      kvClientSecretName: '${{ variables.kvClientSecretName }}'
-      kvIkeySecretName: '${{ variables.kvIkeySecretName }}'
-      kvName: '${{ variables.kvName }}'
-      kvRgName: '${{ variables.envRgName }}'
-      aspNetCoreEnvironment: '${{ variables.aspNetCoreEnvironment }}'
+#   # Deploy to AKS
+#   - template: /templates/pipelines/kubernetes/preservation-deploy.yml@templates
+#     parameters:
+#       deploymentName: 'deploy_to_k8s'
+#       dependsOn: ''
+#       serviceConnection: '${{ variables.serviceConnection }}'
+#       env: '${{ variables.envName }}'
+#       envRg: 'pcs-hosting-rg'
+#       envGroup: '${{ variables.envGroupName }}'
+#       dockerImage: 'procosys.azurecr.io/preservation/api:${{ variables.versionNumber }}$(Build.BuildId)'
+#       clusterName: 'pcs-aks-test'
+#       kvClientIdName: '${{ variables.kvClientIdName }}'
+#       kvUriName: '${{ variables.kvUriName }}'
+#       kvClientSecretName: '${{ variables.kvClientSecretName }}'
+#       kvIkeySecretName: '${{ variables.kvIkeySecretName }}'
+#       kvName: '${{ variables.kvName }}'
+#       kvRgName: '${{ variables.envRgName }}'
+#       aspNetCoreEnvironment: '${{ variables.aspNetCoreEnvironment }}'
 
-# Prod deploy stage
-- stage: prod
-  displayName: 'Prod'
-  dependsOn: 'common'
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-  variables:
-    envName: 'prod'
-    envRg: '${{ variables.envRgName }}'
-    envGroupName: '$(globalPrefix)-$(fullAppName)-api-${{ variables.envName }}'
-    serviceConnection: '${{ variables.prodServiceConnection }}'
+# # Prod deploy stage
+# - stage: prod
+#   displayName: 'Prod'
+#   dependsOn: 'common'
+#   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+#   variables:
+#     envName: 'prod'
+#     envRg: '${{ variables.envRgName }}'
+#     envGroupName: '$(globalPrefix)-$(fullAppName)-api-${{ variables.envName }}'
+#     serviceConnection: '${{ variables.prodServiceConnection }}'
 
-  jobs:
-  # Run Migration Script
-  - template: /templates/pipelines/runsqlmigrate-preservation.yml@templates
-    parameters:
-      dependsOn: ''
-      #deploymentName: 'run_migration_script'
-      deploymentName: 'will_not_run_migration_script_until_november_fix'
-      envGroup: '${{ variables.envGroupName }}'
-      serviceConnection: '${{ variables.serviceConnection }}'
-      kvName: '${{ variables.commonKeyVault }}'
-      kvRgName: 'pcs-common-rg'
-      kvSecret: '${{ variables.sqlAdminUserName }}-${{ variables.envName }}'
-      serverName: '${{ variables.sqlServerName }}.database.windows.net'
-      databaseName: '${{ variables.sqlDatabaseName }}'
+#   jobs:
+#   # Run Migration Script
+#   - template: /templates/pipelines/runsqlmigrate-preservation.yml@templates
+#     parameters:
+#       dependsOn: ''
+#       #deploymentName: 'run_migration_script'
+#       deploymentName: 'will_not_run_migration_script_until_november_fix'
+#       envGroup: '${{ variables.envGroupName }}'
+#       serviceConnection: '${{ variables.serviceConnection }}'
+#       kvName: '${{ variables.commonKeyVault }}'
+#       kvRgName: 'pcs-common-rg'
+#       kvSecret: '${{ variables.sqlAdminUserName }}-${{ variables.envName }}'
+#       serverName: '${{ variables.sqlServerName }}.database.windows.net'
+#       databaseName: '${{ variables.sqlDatabaseName }}'
 
-  # Deploy to AKS
-  - template: /templates/pipelines/kubernetes/preservation-deploy.yml@templates
-    parameters:
-      deploymentName: 'deploy_to_k8s'
-      dependsOn: ''
-      serviceConnection: '${{ variables.serviceConnection }}'
-      env: '${{ variables.envName }}'
-      envRg: 'pcs-hosting-rg'
-      envGroup: '${{ variables.envGroupName }}'
-      dockerImage: 'procosys.azurecr.io/preservation/api:${{ variables.versionNumber }}$(Build.BuildId)'
-      clusterName: 'pcs-aks-prod'
-      kvClientIdName: '${{ variables.kvClientIdName }}'
-      kvUriName: '${{ variables.kvUriName }}'
-      kvClientSecretName: '${{ variables.kvClientSecretName }}'
-      kvIkeySecretName: '${{ variables.kvIkeySecretName }}'
-      kvName: '${{ variables.kvName }}'
-      kvRgName: '${{ variables.envRgName }}'
-      aspNetCoreEnvironment: '${{ variables.aspNetCoreEnvironment }}'
+#   # Deploy to AKS
+#   - template: /templates/pipelines/kubernetes/preservation-deploy.yml@templates
+#     parameters:
+#       deploymentName: 'deploy_to_k8s'
+#       dependsOn: ''
+#       serviceConnection: '${{ variables.serviceConnection }}'
+#       env: '${{ variables.envName }}'
+#       envRg: 'pcs-hosting-rg'
+#       envGroup: '${{ variables.envGroupName }}'
+#       dockerImage: 'procosys.azurecr.io/preservation/api:${{ variables.versionNumber }}$(Build.BuildId)'
+#       clusterName: 'pcs-aks-prod'
+#       kvClientIdName: '${{ variables.kvClientIdName }}'
+#       kvUriName: '${{ variables.kvUriName }}'
+#       kvClientSecretName: '${{ variables.kvClientSecretName }}'
+#       kvIkeySecretName: '${{ variables.kvIkeySecretName }}'
+#       kvName: '${{ variables.kvName }}'
+#       kvRgName: '${{ variables.envRgName }}'
+#       aspNetCoreEnvironment: '${{ variables.aspNetCoreEnvironment }}'
